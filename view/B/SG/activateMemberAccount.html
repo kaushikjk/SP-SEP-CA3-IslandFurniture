@@ -1,0 +1,46 @@
+<script>
+    var countryPrefix = localStorage.getItem('urlPrefix');
+    var currentUrl = new URL(window.location.href);
+    var email = currentUrl.searchParams.get("email");
+    var activationCode = currentUrl.searchParams.get("activateCode");
+    if(email == null || email == '' || activationCode == null || activationCode == '') {
+        if(countryPrefix == null || countryPrefix == '') {
+            window.location.href = '/B/selectCountry.html';
+        }
+        else {
+            window.location.href = '/B/' + countryPrefix + '/memberLogin.html';
+        }
+    }
+    else {
+        var data = {
+            email: email,
+            activateCode: activationCode
+        };
+        fetch(new Request('/api/activateMemberAccount',
+        {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            if(data.success) {
+                if(countryPrefix == null || countryPrefix == '') {
+                    window.location.href = '/B/selectCountry.html';
+                }
+                else {
+                    window.location.href = '/B/' + countryPrefix + '/memberLogin.html?goodMsg=Account activated successfully.';
+                }
+            }
+        }).catch(function(error) {
+            if(countryPrefix == null || countryPrefix == '') {
+                window.location.href = '/B/selectCountry.html';
+            }
+            else {
+                window.location.href = '/B/' + countryPrefix + '/memberLogin.html?errMsg=Activation Failed. Email or activation code is invalid.';
+            }
+        });
+    }
+</script>

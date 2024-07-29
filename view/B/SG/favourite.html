@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../checkCountry.js"></script>
+    <script src="../../header.js"></script>
+    <style>
+        .btn-spacing {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var favorites = JSON.parse(localStorage.getItem('favorites'));
+
+            var htmlTxt = '';
+
+            if (favorites && favorites.length > 0) {
+                favorites.forEach(function(furniture) {
+                    htmlTxt += '\
+                        <li class="col-md-3 col-sm-6 col-xs-12 product" style="padding-bottom: 1%;padding-top: 2%;">\
+                            <span class="product-thumb-info">\
+                                <span class="product-thumb-info-image">\
+                                    <span class="product-thumb-info-act">\
+                                        <span class="product-thumb-info-act-left">\
+                                            <a href="furnitureProductDetails.html?sku=' + furniture.sku + '" style="color: white"><em>View Details</em></a>\
+                                        </span>\
+                                    </span>\
+                                    <img alt="" class="img-responsive" src="' + furniture.imgURL + '">\
+                                </span>\
+                                <span class="product-thumb-info-content">\
+                                    <h4>' + furniture.name + '</h4>\
+                                    <form action="furnitureProductDetails.html">\
+                                        <input type="hidden" name="sku" value="' + furniture.sku + '"/>\
+                                        <input type="submit" class="btn btn-primary btn-block btn-spacing" value="More Details"/>\
+                                    </form>\
+                                    <button class="btn btn-danger btn-block" onclick="removeFromFavorites(\'' + furniture.sku + '\')">Remove from Favorites</button>\
+                                </span>\
+                            </span>\
+                        </li>';
+                });
+            } else {
+                htmlTxt = '<p>No favorite items found.</p>';
+            }
+
+            document.getElementById("favoritesDisplay").innerHTML = htmlTxt;
+        }, false);
+
+        function removeFromFavorites(sku) {
+            var favorites = JSON.parse(localStorage.getItem('favorites'));
+            if (favorites) {
+                favorites = favorites.filter(function(item) {
+                    return item.sku !== sku;
+                });
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                location.reload();
+            }
+        }
+    </script>
+    <div class="body">
+        <script src="menu2.js"></script>
+        <div class="body">
+            <div role="main" class="main">
+                <section class="page-top">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>Favorites</h2>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="container">
+                    <script src="/displayMessageLong.js"></script>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h2 class="shorter"><strong>Favorites</strong></h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <ul id="favoritesDisplay" class="products product-thumb-info-list" style="list-style-type: none; margin-left: -3%;" data-plugin-masonry></ul>
+                    </div>
+                    <hr class="tall">
+                </div>
+            </div>
+        </div>
+        <script src="../footer.js"></script>
+    </div>
+</body>
+</html>
